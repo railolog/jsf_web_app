@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <h:outputScript library="javax.faces" name="jsf.js"/>
+        <style type="text/css">
+            .inp {
+                margin: 5px;
+            }
+
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            table, th, td {
+                border: 1px dotted;
+            }
+
+            td span{                    /*потомки*/
+                color: crimson;
+            }
+
+            div#result {
+                align-self: auto;
+                overflow: auto;
+                max-height: 400px;
+            }
+
+            div > table{                /*дочерние*/
+                width: 100%;
+            }
+
+            td#result {
+                vertical-align: top;
+                width: 40%;
+            }
+
+            .rInput {
+                border: 1px dotted black;
+                background: white;
+                padding: 1px 7px;
+                color: black;
+                text-decoration: none;
+                vertical-align: middle;
+            }
+            .rInput:hover {
+                background: #cccccc;
+            }
+
+            .button {
+                color: black;
+                border-radius: 5px;
+                border: 1px solid rgb(28, 110, 164);
+                background: #46E6FF;
+            }
+
+            .button:hover {
+                transform: scale(0.99);
+                background: #3ABED3
+            }
+
+            .button:active {
+                background: #247784
+            }
+
+            #results {
+                color: black;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <table>
+            <tr>
+                <td colspan="2">
+                    <canvas id="graph" height="211px" width="211px"> </canvas>
+                </td>
+                <td rowspan="0" id="result">
+                    <div id="result">
+                        <!--<h:dataTable value="#{dotsHandler.dotList}" var="dot" id="results" styleClass="results">
+                            <h:column>
+                                <f:facet name="header">X</f:facet>
+                                #{dot.x}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Y</f:facet>
+                                #{dot.y}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">R</f:facet>
+                                #{dot.r}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Попадание</f:facet>
+                                #{dot.inArea}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Время</f:facet>
+                                #{dot.creationDate}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Время исполнения скрипта</f:facet>
+                                #{dot.execTime}
+                            </h:column>
+                        </h:dataTable> -->
+                        <h:panelGroup id="results">
+                            <script type="text/javascript">dots = []</script>
+                            <script type="text/javascript">
+                                <ui:repeat value="#{dotsHandler.dotList}" var="hit">
+                                    dots.push(['#{hit.x}', '#{hit.y}', '#{hit.r}', '#{hit.hit}']);
+                                </ui:repeat>
+                                draw();
+                            </script>
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>X</th>
+                                    <th>Y</th>
+                                    <th>R</th>
+                                    <th>Попадание</th>
+                                    <th>Время</th>
+                                    <th>Время исполнения скрипта</th>
+                                </tr>
+                                </thead>
+                                <tbody id="rows" align="center">
+                                <ui:repeat value="#{dotsHandler.dotList}" var="hit">
+                                    <tr>
+                                        <td >#{hit.x}</td>
+                                        <td>#{hit.y}</td>
+                                        <td >#{hit.r}</td>
+                                        <td>#{hit.hit}</td>
+                                        <td >#{hit.creationDate}</td>
+                                        <td>#{hit.execTime}</td>
+                                    </tr>
+                                </ui:repeat>
+                                </tbody>
+                            </table>
+                        </h:panelGroup>
+                    </div>
+                </td>
+            </tr>
+            <h:form>
+                <tr>
+                    <td>Выберите X:</td>
+                    <td>
+                        <h:selectBooleanCheckbox styleClass="xInput" id="x-5" onclick="xOnClick(-5)"/>
+                        <label for="x-5">-5</label>
+                        <h:selectBooleanCheckbox styleClass="xInput" id="x-4" onclick="xOnClick(-4)"/>
+                        <label for="x-4">-4</label>
+                        <h:selectBooleanCheckbox styleClass="xInput" id="x-3" onclick="xOnClick(-3)"/>
+                        <label for="x-3">-3</label>
+                        <h:selectBooleanCheckbox styleClass="xInput" id="x-2" onclick="xOnClick(-2)"/>
+                        <label for="x-2">-2</label>
+                        <h:selectBooleanCheckbox styleClass="xInput" id="x-1" onclick="xOnClick(-1)"/>
+                        <label for="x-1">-1</label>
+                        <h:selectBooleanCheckbox styleClass="xInput" id="x0" onclick="xOnClick(0)"/>
+                        <label for="x0">0</label>
+                        <h:selectBooleanCheckbox styleClass="xInput" id="x1" onclick="xOnClick(1)"/>
+                        <label for="x1">1</label>
+                        <h:selectBooleanCheckbox styleClass="xInput" id="x2" onclick="xOnClick(2)"/>
+                        <label for="x2">2</label>
+                        <h:selectBooleanCheckbox styleClass="xInput" id="x3" onclick="xOnClick(3)"/>
+                        <label for="x3">3</label>
+                        <h:selectBooleanCheckbox styleClass="xInput" id="x4" onclick="xOnClick(4)"/>
+                        <label for="x4">4</label>
+                        <h:selectBooleanCheckbox styleClass="xInput" id="x5" onclick="xOnClick(5)"/>
+                        <label for="x5">5</label>
+                        <span class="error x"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Введите Y:</td>
+                    <td>
+                        <h:inputText styleClass="yInput" maxlength="5" />
+                        <span class="error y"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Выберите R:</td>
+                    <td>
+                        <h:commandLink value="1" styleClass="rInput" onclick="rOnClick(1); return false;" />
+                        <h:commandLink value="2" styleClass="rInput" onclick="rOnClick(2); return false;" />
+                        <h:commandLink value="3" styleClass="rInput" onclick="rOnClick(3); return false;" />
+                        <h:commandLink value="4" styleClass="rInput" onclick="rOnClick(4); return false;" />
+                        <h:commandLink value="5" styleClass="rInput" onclick="rOnClick(5); return false;" />
+                        <span class="error r"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <h:commandButton styleClass="submitBtn button" value="Проверить попадание в область"/>
+                    </td>
+                </tr>
+            </h:form>
+            <tr>
+                <td colspan="2">
+                    <h:form>
+                        <div class="text-center">
+                            <h:commandButton action="#{navigationController.processFormPage()}"
+                                             value = "Перейти на главную"
+                                             styleClass="button"/>
+                        </div>
+                    </h:form>
+                </td>
+            </tr>
+            <h:form id="formHidden" style="display: none">
+                <h:inputHidden id="xHidden" value="#{dotsHandler.dot.x}"/>
+                <h:inputHidden id="yHidden" value="#{dotsHandler.dot.y}"/>
+                <h:inputHidden id="rHidden" value="#{dotsHandler.dot.r}"/>
+                <h:commandButton id="sbtHidden" action="#{dotsHandler.addDot()}" style="visibility: hidden">
+                    <f:ajax execute="@form" render="results"/>
+                </h:commandButton>
+            </h:form>
+        </table>
+        <h:outputScript library="js" name="validation.js"/>
+        <h:outputScript library="js" name="canvas.js"/>
+    </h:body>
+</html>
